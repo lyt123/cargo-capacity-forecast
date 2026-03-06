@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useEffect, useState } from 'react'
 
 interface Route { id: number; code: string; name: string }
@@ -18,7 +19,7 @@ export default function DailySubmitPage() {
   const [results, setResults] = useState<DeviationResult[]>([])
 
   useEffect(() => {
-    fetch('/api/routes').then(r => r.json()).then(data => {
+    fetch(api('/api/routes')).then(r => r.json()).then(data => {
       const unique = Array.from(new Map(data.map((d: Route) => [d.id, d])).values()) as Route[]
       setRoutes(unique)
       const init: typeof entries = {}
@@ -41,7 +42,7 @@ export default function DailySubmitPage() {
 
     setSubmitting(true)
     try {
-      const res = await fetch('/api/daily-submit', {
+      const res = await fetch(api('/api/daily-submit'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ entries: items }),
       })

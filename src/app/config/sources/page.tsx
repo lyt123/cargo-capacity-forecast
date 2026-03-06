@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useEffect, useState } from 'react'
 
 interface Source { id: number; name: string; url: string; category: string; enabled: number; description: string }
@@ -12,13 +13,13 @@ export default function SourcesPage() {
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState<number | null>(null)
 
-  const load = () => fetch('/api/sources').then(r => r.json()).then(setSources)
+  const load = () => fetch(api('/api/sources')).then(r => r.json()).then(setSources)
   useEffect(() => { load() }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
-    await fetch('/api/sources', {
+    await fetch(api('/api/sources'), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: form.name, url: form.url, category: form.category, description: form.description, enabled: 1 }),
     })
@@ -26,7 +27,7 @@ export default function SourcesPage() {
   }
 
   async function toggleEnabled(s: Source) {
-    await fetch('/api/sources', {
+    await fetch(api('/api/sources'), {
       method: 'PUT', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...s, enabled: s.enabled ? 0 : 1 }),
     })
@@ -36,7 +37,7 @@ export default function SourcesPage() {
   async function fetchSignal(sourceId: number) {
     setFetching(sourceId)
     try {
-      const res = await fetch('/api/signals', {
+      const res = await fetch(api('/api/signals'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ source_id: sourceId }),
       })
@@ -49,7 +50,7 @@ export default function SourcesPage() {
 
   async function handleDelete(id: number) {
     if (!confirm('确认删除？')) return
-    await fetch(`/api/sources?id=${id}`, { method: 'DELETE' }); load()
+    await fetch(api(`/api/sources?id=${id}`), { method: 'DELETE' }); load()
   }
 
   return (

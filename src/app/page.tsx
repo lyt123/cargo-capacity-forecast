@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 
@@ -14,7 +15,7 @@ export default function Dashboard() {
   const [data, setData] = useState<DashboardData | null>(null)
 
   useEffect(() => {
-    fetch('/api/dashboard').then(r => r.json()).then(setData)
+    fetch(api('/api/dashboard')).then(r => r.json()).then(setData)
   }, [])
 
   if (!data) return <div className="text-center py-20 text-muted">加载中...</div>

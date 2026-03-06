@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 
@@ -18,27 +19,27 @@ export default function ForecastPage() {
   const [factors, setFactors] = useState('')
 
   useEffect(() => {
-    fetch('/api/routes').then(r => r.json()).then(data => {
+    fetch(api('/api/routes')).then(r => r.json()).then(data => {
       const unique = Array.from(new Map(data.map((d: Route) => [d.id, d])).values()) as Route[]
       setRoutes(unique)
     })
-    fetch('/api/events').then(r => r.json()).then(setEvents)
+    fetch(api('/api/events')).then(r => r.json()).then(setEvents)
   }, [])
 
   useEffect(() => {
     const params = new URLSearchParams({ limit: '500' })
     if (selectedRoute !== 'all') params.set('route_id', selectedRoute)
-    fetch(`/api/cargo?${params}`).then(r => r.json()).then(res => setHistory(res.data))
+    fetch(api(`/api/cargo?${params}`)).then(r => r.json()).then(res => setHistory(res.data))
 
     const pParams = new URLSearchParams()
     if (selectedRoute !== 'all') pParams.set('route_id', selectedRoute)
-    fetch(`/api/predict?${pParams}`).then(r => r.json()).then(setPredictions)
+    fetch(api(`/api/predict?${pParams}`)).then(r => r.json()).then(setPredictions)
   }, [selectedRoute])
 
   async function runPredict() {
     setPredicting(true)
     try {
-      const res = await fetch('/api/predict', {
+      const res = await fetch(api('/api/predict'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ period }),
       })
@@ -47,7 +48,7 @@ export default function ForecastPage() {
       setFactors(data.factors || '')
       const pParams = new URLSearchParams()
       if (selectedRoute !== 'all') pParams.set('route_id', selectedRoute)
-      const pRes = await fetch(`/api/predict?${pParams}`)
+      const pRes = await fetch(api(`/api/predict?${pParams}`))
       setPredictions(await pRes.json())
     } catch { alert('预测失败') }
     setPredicting(false)

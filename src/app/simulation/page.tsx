@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 
@@ -20,21 +21,21 @@ export default function SimulationPage() {
   const [history, setHistory] = useState<HistorySim[]>([])
 
   useEffect(() => {
-    fetch('/api/simulate').then(r => r.json()).then(setHistory)
+    fetch(api('/api/simulate')).then(r => r.json()).then(setHistory)
   }, [])
 
   async function runSimulation() {
     if (!assumption.trim()) return
     setLoading(true)
     try {
-      const res = await fetch('/api/simulate', {
+      const res = await fetch(api('/api/simulate'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ assumption }),
       })
       const data = await res.json()
       if (data.error) { alert(data.error); return }
       setResult(data)
-      fetch('/api/simulate').then(r => r.json()).then(setHistory)
+      fetch(api('/api/simulate')).then(r => r.json()).then(setHistory)
     } catch { alert('模拟失败') }
     setLoading(false)
   }

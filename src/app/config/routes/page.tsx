@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useEffect, useState } from 'react'
 
 interface RouteRow {
@@ -13,7 +14,7 @@ export default function RoutesConfig() {
   const [form, setForm] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
 
-  const load = () => fetch('/api/routes').then(r => r.json()).then(setData)
+  const load = () => fetch(api('/api/routes')).then(r => r.json()).then(setData)
   useEffect(() => { load() }, [])
 
   const routes = Array.from(new Map(data.map(d => [d.id, { id: d.id, code: d.code, name: d.name }])).values())
@@ -22,13 +23,13 @@ export default function RoutesConfig() {
     e.preventDefault()
     setLoading(true)
     if (showForm === 'route') {
-      await fetch('/api/routes', {
+      await fetch(api('/api/routes'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'route', code: form.code, name: form.name }),
       })
     } else {
-      await fetch('/api/routes', {
+      await fetch(api('/api/routes'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -44,7 +45,7 @@ export default function RoutesConfig() {
 
   async function handleDelete(id: number, type: string) {
     if (!confirm('确认删除？')) return
-    await fetch(`/api/routes?id=${id}&type=${type}`, { method: 'DELETE' })
+    await fetch(api(`/api/routes?id=${id}&type=${type}`), { method: 'DELETE' })
     load()
   }
 

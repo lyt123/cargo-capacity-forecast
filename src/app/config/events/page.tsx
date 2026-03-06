@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useEffect, useState } from 'react'
 
 const EVENT_TYPES = ['节假日', '电商大促', '政策变动', '行业展会', '天气事件', '突发事件', '其他']
@@ -12,7 +13,7 @@ export default function EventsPage() {
   const [editId, setEditId] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const load = () => fetch('/api/events').then(r => r.json()).then(setEvents)
+  const load = () => fetch(api('/api/events')).then(r => r.json()).then(setEvents)
   useEffect(() => { load() }, [])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -24,9 +25,9 @@ export default function EventsPage() {
       start_date: form.start_date, end_date: form.end_date, description: form.description,
     }
     if (editId) {
-      await fetch('/api/events', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, id: editId }) })
+      await fetch(api('/api/events'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, id: editId }) })
     } else {
-      await fetch('/api/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      await fetch(api('/api/events'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
     }
     setShowForm(false); setForm({}); setEditId(null); setLoading(false); load()
   }
@@ -38,7 +39,7 @@ export default function EventsPage() {
 
   async function handleDelete(id: number) {
     if (!confirm('确认删除？')) return
-    await fetch(`/api/events?id=${id}`, { method: 'DELETE' }); load()
+    await fetch(api(`/api/events?id=${id}`), { method: 'DELETE' }); load()
   }
 
   return (

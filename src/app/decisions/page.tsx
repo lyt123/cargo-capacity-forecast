@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useEffect, useState } from 'react'
 
 interface Decision {
@@ -9,13 +10,13 @@ export default function DecisionsPage() {
   const [data, setData] = useState<Decision[]>([])
   const [generating, setGenerating] = useState(false)
 
-  const load = () => fetch('/api/decisions').then(r => r.json()).then(setData)
+  const load = () => fetch(api('/api/decisions')).then(r => r.json()).then(setData)
   useEffect(() => { load() }, [])
 
   async function generate() {
     setGenerating(true)
     try {
-      const res = await fetch('/api/decisions', { method: 'POST' })
+      const res = await fetch(api('/api/decisions'), { method: 'POST' })
       const result = await res.json()
       if (result.error) { alert(result.error); return }
       load()
@@ -24,7 +25,7 @@ export default function DecisionsPage() {
   }
 
   async function updateStatus(id: number, status: string) {
-    await fetch('/api/decisions', {
+    await fetch(api('/api/decisions'), {
       method: 'PUT', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, status }),
     })

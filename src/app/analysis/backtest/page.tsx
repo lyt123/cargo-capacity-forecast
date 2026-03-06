@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 
@@ -14,8 +15,8 @@ export default function BacktestPage() {
   const [selectedRoute, setSelectedRoute] = useState('all')
 
   useEffect(() => {
-    fetch('/api/deviations?limit=200').then(r => r.json()).then(setData)
-    fetch('/api/routes').then(r => r.json()).then(d => {
+    fetch(api('/api/deviations?limit=200')).then(r => r.json()).then(setData)
+    fetch(api('/api/routes')).then(r => r.json()).then(d => {
       const unique = Array.from(new Map(d.map((x: { id: number }) => [x.id, x])).values()) as typeof routes
       setRoutes(unique)
     })

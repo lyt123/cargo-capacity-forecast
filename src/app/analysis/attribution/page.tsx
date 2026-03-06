@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/lib/config'
 import { useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 
@@ -17,7 +18,7 @@ export default function AttributionPage() {
   const [editTags, setEditTags] = useState<string[]>([])
   const [editCorrection, setEditCorrection] = useState('')
 
-  const load = () => fetch('/api/deviations?limit=200').then(r => r.json()).then(setData)
+  const load = () => fetch(api('/api/deviations?limit=200')).then(r => r.json()).then(setData)
   useEffect(() => { load() }, [])
 
   function startEdit(d: Deviation) {
@@ -28,7 +29,7 @@ export default function AttributionPage() {
 
   async function saveEdit() {
     if (editId === null) return
-    await fetch('/api/deviations', {
+    await fetch(api('/api/deviations'), {
       method: 'PUT', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: editId, tags: JSON.stringify(editTags), user_correction: editCorrection }),
     })
