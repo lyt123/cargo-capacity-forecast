@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+把前端代码推到github，再ssh admin@112.124.68.82进入新建目录拉代码，配置nginx后启动
