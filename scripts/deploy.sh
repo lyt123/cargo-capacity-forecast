@@ -12,7 +12,8 @@ git pull origin main || git clone https://github.com/lyt123/cargo-capacity-forec
 echo "==> 安装依赖..."
 npm install
 
-echo "==> 构建（在服务器执行）..."
+echo "==> 构建（在服务器执行，先清理避免 chunk 哈希不一致）..."
+rm -rf .next
 npm run build
 
 echo "==> 使用 pm2 启动（PORT=3001 与 nginx 一致）..."
